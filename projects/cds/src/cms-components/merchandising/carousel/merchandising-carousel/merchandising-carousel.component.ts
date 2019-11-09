@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Product } from '@spartacus/core';
+import { CmsComponentData } from '@spartacus/storefront';
 import { Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, flatMap, map } from 'rxjs/operators';
-import { CmsComponentData } from '../../../../../../storefrontlib/src/cms-structure/page/model/cms-component-data';
-import { CmsMerchandisingCarouselComponent as model } from '../../../../cds-models/cms.model';
-import { StrategyConnector } from './../../../../../../cds/src/merchandising/connectors/strategy/strategy.connector';
+import { CmsMerchandisingCarouselComponent } from '../../../../cds-models/cms.model';
+import { StrategyConnector } from '../../../../merchandising/connectors/strategy/strategy.connector';
 
 @Component({
   selector: 'cx-merchandising-carousel',
@@ -12,9 +12,9 @@ import { StrategyConnector } from './../../../../../../cds/src/merchandising/con
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MerchandisingCarouselComponent {
-  private componentData$: Observable<model> = this.componentData.data$.pipe(
-    filter(Boolean)
-  );
+  private componentData$: Observable<
+    CmsMerchandisingCarouselComponent
+  > = this.componentData.data$.pipe(filter(Boolean));
 
   title$: Observable<string> = this.componentData$.pipe(
     map(data => data.title)
@@ -43,7 +43,9 @@ export class MerchandisingCarouselComponent {
   );
 
   constructor(
-    protected componentData: CmsComponentData<model>,
+    protected componentData: CmsComponentData<
+      CmsMerchandisingCarouselComponent
+    >,
     protected strategyConnector: StrategyConnector
   ) {}
 }
