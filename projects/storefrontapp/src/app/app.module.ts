@@ -9,6 +9,7 @@ import {
 } from '@angular/platform-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { translationChunksConfig, translations } from '@spartacus/assets';
+import { CdsModule } from '@spartacus/cds';
 import { ConfigModule, TestConfigModule } from '@spartacus/core';
 import {
   B2cStorefrontModule,
@@ -31,6 +32,7 @@ if (!environment.production) {
   imports: [
     BrowserModule.withServerTransition({ appId: 'spartacus-app' }),
     BrowserTransferStateModule,
+    CdsModule.forRoot(),
 
     B2cStorefrontModule.withConfig({
       backend: {
