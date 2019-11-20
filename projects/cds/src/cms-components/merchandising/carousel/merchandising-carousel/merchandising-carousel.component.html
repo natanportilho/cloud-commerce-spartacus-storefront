@@ -18,3 +18,6 @@
     <div class="price">{{ item.price?.formattedValue }}</div>
   </a>
 </ng-template>
+
+<!-- TODO: this is not rendered in the DOM, it just triggers the stream. It's only temporary until I fully understand what's the flow. -->
+<ng-container *ngIf="currentProduct$ | async"></ng-container>

@@ -9,6 +9,7 @@ import {
   switchMap,
 } from 'rxjs/operators';
 import { CmsMerchandisingCarouselComponent } from '../../../../cds-models/cms.model';
+import { MerchandisingProducts } from '../../../../merchandising/model/index';
 import { CdsMerchandisingProductService } from './../../../../merchandising/facade/cds-merchandising-product.service';
 
 @Component({
@@ -17,13 +18,6 @@ import { CdsMerchandisingProductService } from './../../../../merchandising/faca
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MerchandisingCarouselComponent {
-  constructor(
-    protected componentData: CmsComponentData<
-      CmsMerchandisingCarouselComponent
-    >,
-    protected cdsMerchandisingProductService: CdsMerchandisingProductService
-  ) {}
-
   private componentData$: Observable<
     CmsMerchandisingCarouselComponent
   > = this.componentData.data$.pipe(filter(Boolean));
@@ -46,4 +40,16 @@ export class MerchandisingCarouselComponent {
     map(merchandisingProducts => merchandisingProducts.products),
     map(products => products.map(product => of(product)))
   );
+
+  currentProduct$: Observable<
+    MerchandisingProducts
+  > = this.cdsMerchandisingProductService.getCurrentProduct();
+
+  // TODO: delete this comments: let's keep the constructor after all properties
+  constructor(
+    protected componentData: CmsComponentData<
+      CmsMerchandisingCarouselComponent
+    >,
+    protected cdsMerchandisingProductService: CdsMerchandisingProductService
+  ) {}
 }
