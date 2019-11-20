@@ -41,20 +41,17 @@ export class CdsMerchandisingProductService {
   }
 
   getCurrentProduct(): Observable<MerchandisingProducts> {
-    return (
-      this.currentProductService
-        .getProduct()
-        // TODO: not sure if you need this filter?
-        .pipe(
-          filter(product => Boolean(product)),
-          switchMap(_product =>
-            // TODO: which endpoint you want to call here? is the strategy ID retrieved from `data.strategy` from the component?
-            this.strategyConnector.loadProductsForStrategy(
-              'another strategy id?',
-              context
-            )
-          )
+    return this.currentProductService.getProduct().pipe(
+      // TODO: not sure if you need this filter?
+      filter(product => Boolean(product)),
+      switchMap(_product =>
+        // TODO: which endpoint you want to call here?
+        // TODO: is the strategy ID retrieved from `data.strategy` from the component (line 36)?
+        this.strategyConnector.loadProductsForStrategy(
+          'another strategy id?',
+          context
         )
+      )
     );
   }
 }
