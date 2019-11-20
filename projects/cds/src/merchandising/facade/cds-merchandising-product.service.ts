@@ -1,8 +1,8 @@
+import { of } from 'rxjs/internal/observable/of';
 import { Injectable } from '@angular/core';
-import { BaseSiteService, LanguageService } from '@spartacus/core';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { CurrentProductService } from '../../../../storefrontlib/src/cms-components/product/current-product.service';
+import { BaseSiteService, LanguageService, RoutingService } from '@spartacus/core';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { StrategyRequest } from '../../cds-models/cds-strategy-request.model';
 import { MerchandisingStrategyConnector } from '../connectors/strategy/merchandising-strategy.connector';
 import { MerchandisingProducts } from '../model/merchandising.products.model';
@@ -15,7 +15,7 @@ export class CdsMerchandisingProductService {
     protected strategyConnector: MerchandisingStrategyConnector,
     protected baseSiteService: BaseSiteService,
     protected languageService: LanguageService,
-    protected currentProductService: CurrentProductService
+    private routingService: RoutingService
   ) {}
 
   loadProductsForStrategy(
@@ -25,32 +25,21 @@ export class CdsMerchandisingProductService {
     return combineLatest([
       this.baseSiteService.getActive(),
       this.languageService.getActive(),
+      this.routingService.getRouterState().pipe(
+        switchMap(state => of(state.state.params['productCode'])),
+      )
     ]).pipe(
-      map(([site, language]: [string, string]) => {
+      map(([site, language, productId]: [string, string, string]) => {
         const strategyRequest: StrategyRequest = {
           site,
           language,
           pageSize: numberToDisplay,
+          productId,
         };
         return strategyRequest;
       }),
       switchMap(context =>
         this.strategyConnector.loadProductsForStrategy(strategyId, context)
-      )
-    );
-  }
-
-  getCurrentProduct(): Observable<MerchandisingProducts> {
-    return this.currentProductService.getProduct().pipe(
-      // TODO: not sure if you need this filter?
-      filter(product => Boolean(product)),
-      switchMap(_product =>
-        // TODO: which endpoint you want to call here?
-        // TODO: is the strategy ID retrieved from `data.strategy` from the component (line 36)?
-        this.strategyConnector.loadProductsForStrategy(
-          'another strategy id?',
-          context
-        )
       )
     );
   }
